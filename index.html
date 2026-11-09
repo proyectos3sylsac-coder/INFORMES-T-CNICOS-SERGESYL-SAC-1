@@ -567,10 +567,8 @@
       c.ctx.clearRect(0, 0, c.cvs.width, c.cvs.height);
     }
 
-    function abrirVistaPrevia() {
+    function construirHTMLReporte() {
       const nombreInf = document.getElementById('inp-nombre-informe').value.trim();
-      if(!nombreInf) { alert('Por favor, ingresa el Nombre / Título del Informe Técnico'); return; }
-
       const respImg = document.getElementById('canvas-resp').toDataURL();
       const cliImg = document.getElementById('canvas-cli').toDataURL();
       const modalidad = document.querySelector('input[name="rad-modalidad"]:checked').value;
@@ -585,8 +583,8 @@
         `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px;">${state.photosDespues.map(s => `<img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;">`).join('')}</div>` : 
         `<p style="font-size:0.75rem; color:#64748b;">Sin imágenes posteriores</p>`;
 
-      const htmlPreview = `
-        <div style="font-family:sans-serif; font-size:0.8rem; color:#0f172a; line-height:1.4;">
+      return `
+        <div style="font-family:sans-serif; font-size:0.8rem; color:#0f172a; line-height:1.4; padding:15px; background:#fff;">
           <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:6px; margin-bottom:10px;">
             <div>
               <div style="font-size:1.5rem; font-weight:900; color:#047857;">SERGESYL S.A.C.</div>
@@ -633,16 +631,23 @@
           </div>
         </div>
       `;
+    }
 
-      document.getElementById('preview-container').innerHTML = htmlPreview;
+    function abrirVistaPrevia() {
+      const nombreInf = document.getElementById('inp-nombre-informe').value.trim();
+      if(!nombreInf) { alert('Por favor, ingresa el Nombre / Título del Informe Técnico'); return; }
+
+      document.getElementById('preview-container').innerHTML = construirHTMLReporte();
       document.getElementById('modal-preview').classList.add('active');
     }
 
     function cerrarVistaPrevia() { document.getElementById('modal-preview').classList.remove('active'); }
 
     function guardarEImprimirPDF() {
-      cerrarVistaPrevia();
       const nombreInf = document.getElementById('inp-nombre-informe').value.trim();
+      if(!nombreInf) { alert('Por favor, ingresa el Nombre / Título del Informe Técnico'); return; }
+
+      cerrarVistaPrevia();
       const codigo = document.getElementById('lbl-codigo').innerText;
 
       state.historial.unshift({
@@ -655,16 +660,22 @@
       guardarLocalStorage();
       renderHistorial();
 
-      const element = document.getElementById('preview-container');
+      // Crear un elemento temporal en memoria para renderizar el PDF sin errores de pantalla en blanco
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = construirHTMLReporte();
+      document.body.appendChild(tempDiv);
+
       const opt = {
         margin:       0.3,
         filename:     `${codigo}_${nombreInf.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdf().set(opt).from(element).save();
+      html2pdf().set(opt).from(tempDiv).save().then(() => {
+        document.body.removeChild(tempDiv);
+      });
     }
 
     function realizarOtroInforme() {

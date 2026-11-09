@@ -59,7 +59,7 @@
       position: relative;
     }
 
-    .report-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 0.8rem; margin-bottom: 1rem; }
+    .report-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 0.8rem; margin-bottom: 1rem; page-break-inside: avoid; break-inside: avoid; }
     .company-title-brand { font-size: 1.5rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
     .company-subtitle-brand { font-size: 0.75rem; color: var(--secondary); font-weight: 700; margin-top: 2px; text-transform: uppercase; }
     
@@ -87,12 +87,12 @@
 
     /* GALERÍA DE FOTOS 3 EN LÍNEA */
     .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-top: 0.5rem; }
-    .photo-card { position: relative; width: 100%; height: 130px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); background: #fff; }
+    .photo-card { position: relative; width: 100%; height: 130px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); background: #fff; page-break-inside: avoid; break-inside: avoid; }
     .photo-card img { width: 100%; height: 100%; object-fit: cover; }
     .photo-card .del-photo { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
 
     /* Firmas digital touch */
-    .signature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.2rem; }
+    .signature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.2rem; page-break-inside: avoid; break-inside: avoid; }
     .sig-box { border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem; background: #fafafa; text-align: center; }
     .sig-canvas-wrap { position: relative; width: 100%; height: 110px; background: white; border: 1px dashed #94a3b8; border-radius: 4px; margin: 0.4rem 0; touch-action: none; }
     canvas { width: 100%; height: 100%; display: block; }
@@ -215,7 +215,7 @@
 
         <!-- Seccion Despues -->
         <div class="card">
-          <label style="margin-bottom:0.4rem; display:block;">2. Trabajo Realizado y Conclusiones (Después)</label>
+          <label style="margin-bottom:0.4rem; display:block;">2. DESPUÉS DE REALIZAR EL TRABAJO</label>
           <div class="tag-input-row">
             <input type="text" id="inp-tag-despues" placeholder="Escribe el resultado y presiona Agregar">
             <button class="btn btn-primary btn-sm" onclick="addTag('despues')">Agregar</button>
@@ -576,16 +576,16 @@
       const conclusiones = document.getElementById('inp-conclusiones').value.trim();
 
       const htmlFotosAntes = state.photosAntes.length > 0 ? 
-        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px;">${state.photosAntes.map(s => `<img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;">`).join('')}</div>` : 
+        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px; page-break-inside: avoid; break-inside: avoid;">${state.photosAntes.map(s => `<div style="page-break-inside: avoid; break-inside: avoid;"><img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;"></div>`).join('')}</div>` : 
         `<p style="font-size:0.75rem; color:#64748b;">Sin imágenes previas</p>`;
 
       const htmlFotosDespues = state.photosDespues.length > 0 ? 
-        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px;">${state.photosDespues.map(s => `<img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;">`).join('')}</div>` : 
+        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px; page-break-inside: avoid; break-inside: avoid;">${state.photosDespues.map(s => `<div style="page-break-inside: avoid; break-inside: avoid;"><img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;"></div>`).join('')}</div>` : 
         `<p style="font-size:0.75rem; color:#64748b;">Sin imágenes posteriores</p>`;
 
       return `
         <div style="font-family:sans-serif; font-size:0.8rem; color:#0f172a; line-height:1.4; padding:15px; background:#fff;">
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:6px; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:6px; margin-bottom:10px; page-break-inside: avoid; break-inside: avoid;">
             <div>
               <div style="font-size:1.5rem; font-weight:900; color:#047857;">SERGESYL S.A.C.</div>
               <div style="font-size:0.75rem; color:#1e3a8a; font-weight:700;">SERVICIOS GENERALES ESPECIALIZADOS SYL S.A.C.</div>
@@ -593,7 +593,7 @@
             <div style="text-align:right; background:#f1f5f9; padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1;"><strong>${document.getElementById('lbl-codigo').innerText}</strong><br><span style="font-size:0.65rem; color:#64748b;">${document.getElementById('lbl-clock').innerText}</span></div>
           </div>
           
-          <div style="background:#f8fafc; padding:8px; border-radius:4px; margin-bottom:8px; border:1px solid #e2e8f0;">
+          <div style="background:#f8fafc; padding:8px; border-radius:4px; margin-bottom:8px; border:1px solid #e2e8f0; page-break-inside: avoid; break-inside: avoid;">
             <p><strong>Título:</strong> ${nombreInf}</p>
             <p><strong>Dirigido a:</strong> ${document.getElementById('inp-dirigido').value || '-'}</p>
             <p><strong>Cliente:</strong> ${document.getElementById('sel-cliente').value} | <strong>Lugar:</strong> ${document.getElementById('inp-lugar').value}</p>
@@ -601,23 +601,27 @@
             <p><strong>Responsable:</strong> ${document.getElementById('sel-trabajador').value} (${document.getElementById('sel-cargo').value})</p>
           </div>
 
-          <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:8px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">1. Estado / Problemas Encontrados (Antes)</div>
-          <ul style="margin:4px 0 6px 18px;">${state.tagsAntes.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
-          <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Antes:</div>
-          ${htmlFotosAntes}
+          <div style="page-break-inside: avoid; break-inside: avoid;">
+            <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:8px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">1. Estado / Problemas Encontrados (Antes)</div>
+            <ul style="margin:4px 0 6px 18px;">${state.tagsAntes.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
+            <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Antes:</div>
+            ${htmlFotosAntes}
+          </div>
 
-          <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">2. Trabajo Realizado y Conclusiones (Después)</div>
-          <ul style="margin:4px 0 6px 18px;">${state.tagsDespues.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
-          <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Después:</div>
-          ${htmlFotosDespues}
+          <div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;">
+            <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">2. DESPUÉS DE REALIZAR EL TRABAJO</div>
+            <ul style="margin:4px 0 6px 18px;">${state.tagsDespues.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
+            <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Después:</div>
+            ${htmlFotosDespues}
+          </div>
 
-          ${observaciones ? `<div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Observaciones y Recomendaciones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${observaciones}</p>` : ''}
+          ${observaciones ? `<div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Observaciones y Recomendaciones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${observaciones}</p></div>` : ''}
           
-          ${conclusiones ? `<div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Conclusiones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${conclusiones}</p>` : ''}
+          ${conclusiones ? `<div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Conclusiones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${conclusiones}</p></div>` : ''}
 
-          <hr style="margin:10px 0; border:0; border-top:1px solid #ddd;">
+          <hr style="margin:15px 0; border:0; border-top:1px solid #ddd; page-break-inside: avoid; break-inside: avoid;">
           
-          <div style="display:flex; justify-content:space-between; margin-top:8px;">
+          <div style="display:flex; justify-content:space-between; margin-top:8px; page-break-inside: avoid; break-inside: avoid;">
             <div style="width:48%; text-align:center; background:#fafafa; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
               <div style="font-weight:bold; font-size:0.75rem; color:#1e3a8a;">RESPONSABLE DEL SERVICIO</div>
               <div style="font-size:0.7rem; margin-bottom:2px;">${document.getElementById('sel-trabajador').value} - ${document.getElementById('sel-cargo').value}</div>
@@ -660,7 +664,6 @@
       guardarLocalStorage();
       renderHistorial();
 
-      // Crear un elemento temporal en memoria para renderizar el PDF sin errores de pantalla en blanco
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = construirHTMLReporte();
       document.body.appendChild(tempDiv);
@@ -673,9 +676,12 @@
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdf().set(opt).from(tempDiv).save().then(() => {
-        document.body.removeChild(tempDiv);
-      });
+      // Se añade un pequeño retraso (setTimeout) para garantizar renderizado inmediato al primer clic
+      setTimeout(() => {
+        html2pdf().set(opt).from(tempDiv).save().then(() => {
+          document.body.removeChild(tempDiv);
+        });
+      }, 300);
     }
 
     function realizarOtroInforme() {

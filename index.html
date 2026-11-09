@@ -6,10 +6,10 @@
   <title>Sistema de Informes Técnicos - SERGESYL S.A.C.</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   
-  <!-- Firebase SDK Conectado con tus Credenciales -->
+  <!-- Firebase SDK con Sincronización Automática en Tiempo Real -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBwHrvYeAwoAqnZLY7rkmP0cT8S9v1hGck",
@@ -24,7 +24,27 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     window.db = db;
-    window.firebaseEnabled = true;
+
+    // Escuchar cambios en la nube en tiempo real automáticamente
+    onSnapshot(doc(db, "sergesyl", "config"), (docSnap) => {
+      if (docSnap.exists()) {
+        const cloudData = docSnap.data();
+        state.correlativo = cloudData.correlativo ?? state.correlativo;
+        state.codigoPrefijo = cloudData.codigoPrefijo ?? state.codigoPrefijo;
+        state.trabajadores = cloudData.trabajadores ?? state.trabajadores;
+        state.cargos = cloudData.cargos ?? state.cargos;
+        state.clientes = cloudData.clientes ?? state.clientes;
+        state.historial = cloudData.historial ?? state.historial;
+        state.editorPass = cloudData.editorPass ?? state.editorPass;
+
+        actualizarCodigo();
+        renderSelects();
+        renderHistorial();
+        if(document.getElementById('inp-codigo-prefijo')) {
+          document.getElementById('inp-codigo-prefijo').value = state.codigoPrefijo;
+        }
+      }
+    });
   </script>
 
   <style>
@@ -329,9 +349,9 @@
             </div>
           </div>
           <div class="form-group full">
-            <label>Ajustar Número Correlativo Actual (Si cambias de dispositivo)</label>
+            <label>Ajustar Número Correlativo Actual</label>
             <div style="display:flex; gap:0.5rem;">
-              <input type="number" id="inp-correlativo-manual" placeholder="Ej: 5">
+              <input type="number" id="inp-correlativo-manual" placeholder="Ej: 1">
               <button class="btn btn-primary" onclick="actualizarCorrelativoManual()">Actualizar Correlativo</button>
             </div>
           </div>
@@ -420,41 +440,17 @@
       historial: []
     };
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      await cargarDatos();
+    window.addEventListener('DOMContentLoaded', () => {
       iniciarReloj();
-      renderSelects();
-      actualizarInfoResponsable();
-      actualizarCodigo();
       initCanvas('canvas-resp');
       initCanvas('canvas-cli');
-      renderHistorial();
-      document.getElementById('inp-codigo-prefijo').value = state.codigoPrefijo;
-      document.getElementById('inp-correlativo-manual').value = state.correlativo;
     });
 
-    async function cargarDatos() {
-      if (window.firebaseEnabled && window.db) {
-        try {
-          const docRef = doc(window.db, "sergesyl", "config");
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            state = { ...state, ...docSnap.data() };
-          }
-        } catch (e) { console.error("Error cargando de Firebase", e); }
-      } else {
-        const data = localStorage.getItem('app_sergesyl_db');
-        if (data) state = { ...state, ...JSON.parse(data) };
-      }
-    }
-
-    async function guardarDatos() {
-      if (window.firebaseEnabled && window.db) {
+    async function guardarEnNube() {
+      if (window.db) {
         try {
           await setDoc(doc(window.db, "sergesyl", "config"), state);
-        } catch (e) { console.error("Error guardando en Firebase", e); }
-      } else {
-        localStorage.setItem('app_sergesyl_db', JSON.stringify(state));
+        } catch (e) { console.error("Error al guardar en Firebase", e); }
       }
     }
 
@@ -466,25 +462,26 @@
 
     function actualizarCodigo() {
       document.getElementById('lbl-codigo').innerText = `${state.codigoPrefijo}${String(state.correlativo).padStart(4, '0')}`;
-    }
-
-    function guardarPrefijoCodigo() {
-      const p = document.getElementById('inp-codigo-prefijo').value.trim();
-      if(p) {
-        state.codigoPrefijo = p;
-        guardarDatos();
-        actualizarCodigo();
-        alert('Prefijo de código actualizado correctamente.');
+      if(document.getElementById('inp-correlativo-manual')) {
+        document.getElementById('inp-correlativo-manual').value = state.correlativo;
       }
     }
 
-    function actualizarCorrelativoManual() {
+    async function guardarPrefijoCodigo() {
+      const p = document.getElementById('inp-codigo-prefijo').value.trim();
+      if(p) {
+        state.codigoPrefijo = p;
+        await guardarEnNube();
+        alert('Prefijo actualizado y sincronizado.');
+      }
+    }
+
+    async function actualizarCorrelativoManual() {
       const val = parseInt(document.getElementById('inp-correlativo-manual').value);
       if(!isNaN(val) && val > 0) {
         state.correlativo = val;
-        guardarDatos();
-        actualizarCodigo();
-        alert('Número correlativo actualizado correctamente.');
+        await guardarEnNube();
+        alert('Correlativo actualizado y sincronizado.');
       } else {
         alert('Ingresa un número válido.');
       }
@@ -523,32 +520,58 @@
       } else { alert('Contraseña incorrecta'); }
     }
 
-    function cambiarPassword() {
+    async function cambiarPassword() {
       const p = document.getElementById('inp-new-pass').value.trim();
-      if(p) { state.editorPass = p; guardarDatos(); alert('Contraseña actualizada'); document.getElementById('inp-new-pass').value=''; }
+      if(p) { 
+        state.editorPass = p; 
+        await guardarEnNube(); 
+        alert('Contraseña actualizada'); 
+        document.getElementById('inp-new-pass').value=''; 
+      }
     }
 
     function renderSelects() {
-      document.getElementById('sel-trabajador').innerHTML = state.trabajadores.map(t => `<option value="${t}">${t}</option>`).join('');
-      document.getElementById('sel-cargo').innerHTML = state.cargos.map(c => `<option value="${c}">${c}</option>`).join('');
-      document.getElementById('sel-cliente').innerHTML = state.clientes.map(cl => `<option value="${cl}">${cl}</option>`).join('');
+      const selT = document.getElementById('sel-trabajador');
+      const selC = document.getElementById('sel-cargo');
+      const selCl = document.getElementById('sel-cliente');
+      if(!selT) return;
+
+      const valT = selT.value;
+      const valC = selC.value;
+      const valCl = selCl.value;
+
+      selT.innerHTML = state.trabajadores.map(t => `<option value="${t}" ${t===valT?'selected':''}>${t}</option>`).join('');
+      selC.innerHTML = state.cargos.map(c => `<option value="${c}" ${c===valC?'selected':''}>${c}</option>`).join('');
+      selCl.innerHTML = state.clientes.map(cl => `<option value="${cl}" ${cl===valCl?'selected':''}>${cl}</option>`).join('');
       actualizarInfoResponsable();
     }
 
     function renderEditorLists() {
       ['trabajadores', 'cargos', 'clientes'].forEach(type => {
-        document.getElementById(`list-editor-${type}`).innerHTML = state[type].map((item, idx) => `
-          <li class="tag-item">${item} <span class="remove-tag" onclick="removeItem('${type}', ${idx})">&times;</span></li>
-        `).join('');
+        const el = document.getElementById(`list-editor-${type}`);
+        if(el) {
+          el.innerHTML = state[type].map((item, idx) => `
+            <li class="tag-item">${item} <span class="remove-tag" onclick="removeItem('${type}', ${idx})">&times;</span></li>
+          `).join('');
+        }
       });
     }
 
-    function addItem(type) {
+    async function addItem(type) {
       const inp = document.getElementById(`inp-new-${type === 'trabajadores' ? 'trabajador' : type === 'cargos' ? 'cargo' : 'cliente'}`);
-      if(inp.value.trim()) { state[type].push(inp.value.trim()); inp.value=''; guardarDatos(); renderSelects(); renderEditorLists(); }
+      if(inp && inp.value.trim()) { 
+        state[type].push(inp.value.trim()); 
+        inp.value=''; 
+        await guardarEnNube(); 
+        renderEditorLists(); 
+      }
     }
 
-    function removeItem(type, idx) { state[type].splice(idx, 1); guardarDatos(); renderSelects(); renderEditorLists(); }
+    async function removeItem(type, idx) { 
+      state[type].splice(idx, 1); 
+      await guardarEnNube(); 
+      renderEditorLists(); 
+    }
 
     function addTag(type) {
       const inp = document.getElementById(`inp-tag-${type}`);
@@ -717,8 +740,8 @@
         responsable: document.getElementById('sel-trabajador').value,
         fecha: new Date().toLocaleDateString('es-PE')
       });
-      await guardarDatos();
-      renderHistorial();
+      state.correlativo++;
+      await guardarEnNube();
 
       const elementoTemporal = document.createElement('div');
       elementoTemporal.innerHTML = generarContenidoInformeHTML();
@@ -768,11 +791,6 @@
     }
 
     async function realizarOtroInforme() {
-      state.correlativo++;
-      await guardarDatos();
-      actualizarCodigo();
-      document.getElementById('inp-correlativo-manual').value = state.correlativo;
-
       document.getElementById('inp-nombre-informe').value = '';
       document.getElementById('inp-dirigido').value = '';
       document.getElementById('inp-lugar').value = '';
@@ -786,19 +804,19 @@
       state.tagsAntes = []; state.tagsDespues = []; state.photosAntes = []; state.photosDespues = [];
       renderTags('antes'); renderTags('despues'); renderPhotos('antes'); renderPhotos('despues');
       clearCanvas('resp'); clearCanvas('cli');
-      alert('Formulario listo para un nuevo informe.');
+      alert('Formulario listo.');
     }
 
     async function eliminarDelHistorial(idx) {
       if(confirm('¿Estás seguro de eliminar este informe del historial?')) {
         state.historial.splice(idx, 1);
-        await guardarDatos();
-        renderHistorial();
+        await guardarEnNube();
       }
     }
 
     function renderHistorial() {
       const tbody = document.getElementById('tbody-historial');
+      if(!tbody) return;
       if(state.historial.length === 0) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay informes guardados aún.</td></tr>`; return; }
       tbody.innerHTML = state.historial.map((item, idx) => `
         <tr>

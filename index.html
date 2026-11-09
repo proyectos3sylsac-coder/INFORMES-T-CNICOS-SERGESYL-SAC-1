@@ -60,8 +60,8 @@
     }
 
     .report-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 0.8rem; margin-bottom: 1rem; }
-    .company-title-brand { font-size: 1.4rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
-    .company-subtitle-brand { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; margin-top: 2px; text-transform: uppercase; }
+    .company-title-brand { font-size: 1.5rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
+    .company-subtitle-brand { font-size: 0.75rem; color: var(--secondary); font-weight: 700; margin-top: 2px; text-transform: uppercase; }
     
     .report-code-box { text-align: right; background: #f1f5f9; padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
     .report-code-box .code { font-size: 1rem; font-weight: 800; color: var(--secondary); }
@@ -132,12 +132,12 @@
     <div id="tab-informe" class="tab-content active">
       <div class="report-paper">
         
-        <!-- Header del Formulario con Nombre y Descripción Corporativa -->
+        <!-- Header del Formulario con Texto Corporativo Destacado -->
         <div class="report-header">
           <div>
             <div class="company-title-brand">SERGESYL S.A.C.</div>
             <div class="company-subtitle-brand">SERVICIOS GENERALES ESPECIALIZADOS SYL S.A.C.</div>
-            <div style="font-size:0.65rem; color:#64748b; margin-top:2px;">INFORME TÉCNICO DE SERVICIO</div>
+            <div style="font-size:0.65rem; color:#64748b; font-weight:bold; margin-top:2px;">INFORME TÉCNICO DE SERVICIO</div>
           </div>
           <div class="report-code-box">
             <div class="code" id="lbl-codigo">INF-2026-0001</div>
@@ -589,8 +589,8 @@
         <div style="font-family:sans-serif; font-size:0.8rem; color:#0f172a; line-height:1.4;">
           <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:6px; margin-bottom:10px;">
             <div>
-              <div style="font-size:1.3rem; font-weight:900; color:#047857;">SERGESYL S.A.C.</div>
-              <div style="font-size:0.65rem; color:#64748b; font-weight:700;">SERVICIOS GENERALES ESPECIALIZADOS SYL S.A.C.</div>
+              <div style="font-size:1.5rem; font-weight:900; color:#047857;">SERGESYL S.A.C.</div>
+              <div style="font-size:0.75rem; color:#1e3a8a; font-weight:700;">SERVICIOS GENERALES ESPECIALIZADOS SYL S.A.C.</div>
             </div>
             <div style="text-align:right; background:#f1f5f9; padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1;"><strong>${document.getElementById('lbl-codigo').innerText}</strong><br><span style="font-size:0.65rem; color:#64748b;">${document.getElementById('lbl-clock').innerText}</span></div>
           </div>

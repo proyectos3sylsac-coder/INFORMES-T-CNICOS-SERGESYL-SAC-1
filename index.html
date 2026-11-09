@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Informes Técnicos de Servicio</title>
+  <title>Sistema de Informes Técnicos - SERGESYL S.A.C.</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     :root {
-      --primary: #1e3a8a;
-      --primary-hover: #1d4ed8;
+      --primary: #047857; /* Verde corporativo Sergesyl */
+      --primary-dark: #065f46;
+      --secondary: #1e3a8a;
       --bg: #f8fafc;
       --surface: #ffffff;
       --border: #cbd5e1;
       --text: #0f172a;
       --text-muted: #64748b;
-      --accent: #0284c7;
       --danger: #ef4444;
       --success: #10b981;
     }
@@ -22,14 +22,14 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: 40px; }
 
-    header { background: var(--primary); color: white; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    header { background: var(--secondary); color: white; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
     header h1 { font-size: 1.25rem; font-weight: 700; }
     .header-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     
-    .btn { background: var(--surface); color: var(--primary); border: 1px solid transparent; padding: 0.5rem 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .btn { background: var(--surface); color: var(--secondary); border: 1px solid transparent; padding: 0.5rem 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.4rem; }
     .btn:hover { background: #e2e8f0; }
     .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:hover { background: var(--primary-dark); }
     .btn-success { background: var(--success); color: white; }
     .btn-success:hover { background: #059669; }
     .btn-danger { background: var(--danger); color: white; }
@@ -39,46 +39,58 @@
     .main-container { max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; }
     .nav-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }
     .tab-btn { background: none; border: none; padding: 0.5rem 1rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; }
-    .tab-btn.active { background: var(--primary); color: white; }
+    .tab-btn.active { background: var(--secondary); color: white; }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
     .card { background: var(--surface); border-radius: 8px; border: 1px solid var(--border); padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     
-    /* Estructura Formal del Informe (PDF / Vista Previa) */
-    .report-paper { background: white; border: 1px solid #94a3b8; padding: 2rem; border-radius: 4px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; max-width: 800px; margin: 0 auto; }
-    .report-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid var(--primary); padding-bottom: 0.8rem; margin-bottom: 1.2rem; }
-    .company-brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
-    .report-code-box { text-align: right; background: #f1f5f9; padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border); }
-    .report-code-box .code { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
-    .report-code-box .realtime-clock { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem; }
+    /* MARCO Y DISEÑO CORPORATIVO TIPO HOJA A4 */
+    .report-paper { 
+      background: white; 
+      border: 3px double var(--secondary); 
+      padding: 2rem; 
+      border-radius: 6px; 
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
+      width: 100%; 
+      max-width: 820px; 
+      margin: 0 auto; 
+      position: relative;
+    }
 
-    .section-title { font-size: 0.85rem; font-weight: 700; background: #f1f5f9; color: var(--primary); padding: 0.4rem 0.6rem; border-left: 4px solid var(--primary); margin: 1rem 0 0.5rem 0; text-transform: uppercase; }
+    .report-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 0.8rem; margin-bottom: 1rem; }
+    .company-logo { max-height: 45px; object-fit: contain; }
+    
+    .report-code-box { text-align: right; background: #f1f5f9; padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); }
+    .report-code-box .code { font-size: 1rem; font-weight: 800; color: var(--secondary); }
+    .report-code-box .realtime-clock { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+    .section-title { font-size: 0.8rem; font-weight: 700; background: #ecfdf5; color: var(--primary); padding: 0.3rem 0.6rem; border-left: 4px solid var(--primary); margin: 0.8rem 0 0.4rem 0; text-transform: uppercase; }
 
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; margin-bottom: 0.8rem; }
     .form-group { display: flex; flex-direction: column; gap: 0.25rem; }
     .form-group.full { grid-column: 1 / -1; }
     label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
     input, select, textarea { width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; font-family: inherit; }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(30,58,138,0.1); }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(4,120,87,0.1); }
 
     .radio-group { display: flex; gap: 1rem; align-items: center; margin-top: 0.2rem; flex-wrap: wrap; }
     .radio-group label { font-size: 0.85rem; text-transform: none; color: var(--text); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.3rem; }
 
     /* Tags UI */
-    .tags-container { border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem; min-height: 50px; background: #fff; }
+    .tags-container { border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem; min-height: 45px; background: #fff; }
     .tag-input-row { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; }
     .tags-list { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; }
-    .tag-item { background: #e0f2fe; color: #0369a1; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; font-weight: 500; }
-    .tag-item .remove-tag { cursor: pointer; font-weight: bold; color: #0284c7; }
+    .tag-item { background: #ecfdf5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; font-weight: 500; border: 1px solid #a7f3d0; }
+    .tag-item .remove-tag { cursor: pointer; font-weight: bold; color: var(--primary); }
     .tag-item .remove-tag:hover { color: var(--danger); }
 
-    /* Galeria de Fotos */
-    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
-    .photo-card { position: relative; width: 100%; height: 95px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+    /* GALERÍA DE FOTOS 3 EN LÍNEA */
+    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-top: 0.5rem; }
+    .photo-card { position: relative; width: 100%; height: 130px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); background: #fff; }
     .photo-card img { width: 100%; height: 100%; object-fit: cover; }
-    .photo-card .del-photo { position: absolute; top: 2px; right: 2px; background: rgba(239,68,68,0.9); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 0.65rem; font-weight: bold; }
+    .photo-card .del-photo { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
 
     /* Firmas digital touch */
     .signature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.2rem; }
@@ -103,7 +115,7 @@
 <body>
 
   <header>
-    <h1>Gestión de Informes Técnicos</h1>
+    <h1>Gestión de Informes Técnicos - SERGESYL</h1>
     <div class="header-btns">
       <button class="btn btn-success" onclick="abrirVistaPrevia()">👁️ Vista Previa y Guardar PDF</button>
       <button class="btn" onclick="realizarOtroInforme()">➕ Realizar Otro Informe</button>
@@ -121,11 +133,11 @@
     <div id="tab-informe" class="tab-content active">
       <div class="report-paper">
         
-        <!-- Header del Formulario -->
+        <!-- Header del Formulario con Logo Oficial -->
         <div class="report-header">
           <div>
-            <div class="company-brand">INFORME TÉCNICO DE SERVICIO</div>
-            <span style="font-size:0.75rem; color:#64748b;">Reporte Oficial de Intervención</span>
+            <img src="https://i.ibb.co/689L8fP/Captura-de-pantalla-2026-10-27-112554.png" alt="SERGESYL S.A.C." class="company-logo">
+            <div style="font-size:0.7rem; color:#64748b; margin-top:2px;">INFORME TÉCNICO DE SERVICIO</div>
           </div>
           <div class="report-code-box">
             <div class="code" id="lbl-codigo">INF-2026-0001</div>
@@ -136,7 +148,7 @@
         <div class="form-grid">
           <div class="form-group full">
             <label>Nombre / Título del Informe Técnico *</label>
-            <input type="text" id="inp-nombre-informe" placeholder="Ej: Mantenimiento Preventivo de Compresor Principal">
+            <input type="text" id="inp-nombre-informe" placeholder="Ej: Mantenimiento Preventivo de Sistema Eléctrico">
           </div>
 
           <div class="form-group">
@@ -151,7 +163,7 @@
 
           <div class="form-group">
             <label>Lugar / Área del Servicio *</label>
-            <input type="text" id="inp-lugar" placeholder="Ej: Planta 2 - Calderas">
+            <input type="text" id="inp-lugar" placeholder="Ej: Planta Principal - Sector B">
           </div>
 
           <div class="form-group full">
@@ -195,7 +207,7 @@
           </div>
 
           <div style="margin-top: 0.8rem;">
-            <label>Imágenes Previas (Antes)</label>
+            <label>Imágenes Previas (Antes) - 3 en línea</label>
             <input type="file" id="file-antes" accept="image/*" multiple onchange="handleImages(event, 'antes')">
             <div class="photo-grid" id="photos-antes"></div>
           </div>
@@ -213,9 +225,21 @@
           </div>
 
           <div style="margin-top: 0.8rem;">
-            <label>Imágenes de Conformidad (Después)</label>
+            <label>Imágenes de Conformidad (Después) - 3 en línea</label>
             <input type="file" id="file-despues" accept="image/*" multiple onchange="handleImages(event, 'despues')">
             <div class="photo-grid" id="photos-despues"></div>
+          </div>
+        </div>
+
+        <!-- Nuevas Secciones: Observaciones, Recomendaciones y Conclusiones -->
+        <div class="form-grid" style="margin-top:1rem;">
+          <div class="form-group full">
+            <label>Observaciones y Recomendaciones</label>
+            <textarea id="inp-observaciones" rows="3" placeholder="Indique observaciones adicionales o recomendaciones técnicas para el cliente..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label>Conclusiones</label>
+            <textarea id="inp-conclusiones" rows="3" placeholder="Conclusiones finales del servicio ejecutado..."></textarea>
           </div>
         </div>
 
@@ -279,7 +303,18 @@
     <!-- TAB: EDITOR -->
     <div id="tab-editor" class="tab-content">
       <div class="card">
-        <h2 style="margin-bottom:1rem; font-size:1.1rem;">Administración de Listas Desplegables</h2>
+        <h2 style="margin-bottom:1rem; font-size:1.1rem;">Administración de Listas y Configuración de Código</h2>
+        
+        <div class="form-grid" style="margin-bottom:1.5rem; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid var(--border);">
+          <div class="form-group full">
+            <label>Prefijo del Código de Informe (Ej: INF-2026- o SER-TEC-)</label>
+            <div style="display:flex; gap:0.5rem;">
+              <input type="text" id="inp-codigo-prefijo" placeholder="INF-2026-">
+              <button class="btn btn-primary" onclick="guardarPrefijoCodigo()">Actualizar Prefijo</button>
+            </div>
+          </div>
+        </div>
+
         <div class="form-grid">
           <div class="form-group">
             <label>Trabajadores</label>
@@ -322,8 +357,8 @@
   <!-- MODAL VISTA PREVIA -->
   <div class="modal" id="modal-preview">
     <div class="modal-body">
-      <h3 style="margin-bottom:1rem; color:var(--primary);">👁️ Vista Previa del Informe Técnico Formal</h3>
-      <div id="preview-container" style="background:#fff; border:1px solid #ccc; padding:1.5rem; margin-bottom:1rem; border-radius:4px; max-height: 70vh; overflow-y: auto;"></div>
+      <h3 style="margin-bottom:1rem; color:var(--secondary);">👁️ Vista Previa del Informe Técnico Formal</h3>
+      <div id="preview-container" style="background:#fff; border:2px double var(--secondary); padding:1.5rem; margin-bottom:1rem; border-radius:4px; max-height: 70vh; overflow-y: auto;"></div>
       <div style="display:flex; gap:1rem; justify-content:flex-end;">
         <button class="btn" onclick="cerrarVistaPrevia()">Regresar a Editar</button>
         <button class="btn btn-success" onclick="guardarEImprimirPDF()">💾 Confirmar y Descargar PDF</button>
@@ -349,6 +384,7 @@
       cargos: ['Técnico Electricista', 'Ingeniero de Campo', 'Supervisor de Servicio'],
       clientes: ['Empresa ABC S.A.C.', 'Industrias X Z', 'Corporación Global'],
       editorPass: '1234',
+      codigoPrefijo: 'INF-2026-',
       correlativo: 1,
       tagsAntes: [],
       tagsDespues: [],
@@ -366,15 +402,16 @@
       initCanvas('canvas-resp');
       initCanvas('canvas-cli');
       renderHistorial();
+      document.getElementById('inp-codigo-prefijo').value = state.codigoPrefijo;
     });
 
     function cargarLocalStorage() {
-      const data = localStorage.getItem('app_informes_db');
+      const data = localStorage.getItem('app_sergesyl_db');
       if (data) state = { ...state, ...JSON.parse(data) };
     }
 
     function guardarLocalStorage() {
-      localStorage.setItem('app_informes_db', JSON.stringify(state));
+      localStorage.setItem('app_sergesyl_db', JSON.stringify(state));
     }
 
     function iniciarReloj() {
@@ -384,7 +421,17 @@
     }
 
     function actualizarCodigo() {
-      document.getElementById('lbl-codigo').innerText = `INF-2026-${String(state.correlativo).padStart(4, '0')}`;
+      document.getElementById('lbl-codigo').innerText = `${state.codigoPrefijo}${String(state.correlativo).padStart(4, '0')}`;
+    }
+
+    function guardarPrefijoCodigo() {
+      const p = document.getElementById('inp-codigo-prefijo').value.trim();
+      if(p) {
+        state.codigoPrefijo = p;
+        guardarLocalStorage();
+        actualizarCodigo();
+        alert('Prefijo de código actualizado correctamente.');
+      }
     }
 
     function actualizarInfoResponsable() {
@@ -422,7 +469,7 @@
 
     function cambiarPassword() {
       const p = document.getElementById('inp-new-pass').value.trim();
-      if(p) { state.editorPass = p; guardarLocalStorage(); alert('Actualizado'); document.getElementById('inp-new-pass').value=''; }
+      if(p) { state.editorPass = p; guardarLocalStorage(); alert('Contraseña actualizada'); document.getElementById('inp-new-pass').value=''; }
     }
 
     function renderSelects() {
@@ -527,22 +574,26 @@
       const respImg = document.getElementById('canvas-resp').toDataURL();
       const cliImg = document.getElementById('canvas-cli').toDataURL();
       const modalidad = document.querySelector('input[name="rad-modalidad"]:checked').value;
+      const observaciones = document.getElementById('inp-observaciones').value.trim();
+      const conclusiones = document.getElementById('inp-conclusiones').value.trim();
 
-      // Generar HTML de fotos Antes
+      // Galería 3 en línea para Vista Previa PDF
       const htmlFotosAntes = state.photosAntes.length > 0 ? 
-        `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:5px;">${state.photosAntes.map(s => `<img src="${s}" style="width:90px; height:75px; object-fit:cover; border:1px solid #ccc; border-radius:4px;">`).join('')}</div>` : 
+        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px;">${state.photosAntes.map(s => `<img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;">`).join('')}</div>` : 
         `<p style="font-size:0.75rem; color:#64748b;">Sin imágenes previas</p>`;
 
-      // Generar HTML de fotos Después
       const htmlFotosDespues = state.photosDespues.length > 0 ? 
-        `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:5px;">${state.photosDespues.map(s => `<img src="${s}" style="width:90px; height:75px; object-fit:cover; border:1px solid #ccc; border-radius:4px;">`).join('')}</div>` : 
+        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px;">${state.photosDespues.map(s => `<img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;">`).join('')}</div>` : 
         `<p style="font-size:0.75rem; color:#64748b;">Sin imágenes posteriores</p>`;
 
       const htmlPreview = `
         <div style="font-family:sans-serif; font-size:0.8rem; color:#0f172a; line-height:1.4;">
-          <div style="display:flex; justify-content:space-between; border-bottom:3px solid #1e3a8a; padding-bottom:6px; margin-bottom:10px;">
-            <div><strong style="font-size:1rem; color:#1e3a8a;">INFORME TÉCNICO DE SERVICIO</strong><br><span style="font-size:0.7rem; color:#64748b;">Fecha: ${document.getElementById('lbl-clock').innerText}</span></div>
-            <div style="text-align:right; background:#f1f5f9; padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1;"><strong>${document.getElementById('lbl-codigo').innerText}</strong></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:6px; margin-bottom:10px;">
+            <div>
+              <img src="https://i.ibb.co/689L8fP/Captura-de-pantalla-2026-10-27-112554.png" style="height:35px; object-fit:contain;">
+              <div style="font-size:0.65rem; color:#64748b; font-weight:bold;">SERVICIOS GENERALES ESPECIALIZADOS SYL S.A.C.</div>
+            </div>
+            <div style="text-align:right; background:#f1f5f9; padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1;"><strong>${document.getElementById('lbl-codigo').innerText}</strong><br><span style="font-size:0.65rem; color:#64748b;">${document.getElementById('lbl-clock').innerText}</span></div>
           </div>
           
           <div style="background:#f8fafc; padding:8px; border-radius:4px; margin-bottom:8px; border:1px solid #e2e8f0;">
@@ -553,28 +604,32 @@
             <p><strong>Responsable:</strong> ${document.getElementById('sel-trabajador').value} (${document.getElementById('sel-cargo').value})</p>
           </div>
 
-          <div style="font-weight:700; color:#1e3a8a; background:#f1f5f9; padding:3px 6px; margin-top:8px; border-left:3px solid #1e3a8a; font-size:0.75rem; text-transform:uppercase;">1. Estado / Problemas Encontrados (Antes)</div>
+          <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:8px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">1. Estado / Problemas Encontrados (Antes)</div>
           <ul style="margin:4px 0 6px 18px;">${state.tagsAntes.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
-          <div><strong>Evidencia Antes:</strong></div>
+          <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Antes:</div>
           ${htmlFotosAntes}
 
-          <div style="font-weight:700; color:#1e3a8a; background:#f1f5f9; padding:3px 6px; margin-top:10px; border-left:3px solid #1e3a8a; font-size:0.75rem; text-transform:uppercase;">2. Trabajo Realizado y Conclusiones (Después)</div>
+          <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">2. Trabajo Realizado y Conclusiones (Después)</div>
           <ul style="margin:4px 0 6px 18px;">${state.tagsDespues.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
-          <div><strong>Evidencia Después:</strong></div>
+          <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Después:</div>
           ${htmlFotosDespues}
+
+          ${observaciones ? `<div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Observaciones y Recomendaciones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${observaciones}</p>` : ''}
+          
+          ${conclusiones ? `<div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Conclusiones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${conclusiones}</p>` : ''}
 
           <hr style="margin:10px 0; border:0; border-top:1px solid #ddd;">
           
           <div style="display:flex; justify-content:space-between; margin-top:8px;">
             <div style="width:48%; text-align:center; background:#fafafa; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
-              <div style="font-weight:bold; font-size:0.75rem;">RESPONSABLE DEL SERVICIO</div>
+              <div style="font-weight:bold; font-size:0.75rem; color:#1e3a8a;">RESPONSABLE DEL SERVICIO</div>
               <div style="font-size:0.7rem; margin-bottom:2px;">${document.getElementById('sel-trabajador').value} - ${document.getElementById('sel-cargo').value}</div>
-              <img src="${respImg}" style="width:130px; height:45px; border:1px dashed #94a3b8; object-fit:contain; background:#fff;">
+              <img src="${respImg}" style="width:140px; height:45px; border:1px dashed #94a3b8; object-fit:contain; background:#fff;">
             </div>
             <div style="width:48%; text-align:center; background:#fafafa; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
-              <div style="font-weight:bold; font-size:0.75rem;">CONFORMIDAD CLIENTE</div>
+              <div style="font-weight:bold; font-size:0.75rem; color:#1e3a8a;">CONFORMIDAD CLIENTE</div>
               <div style="font-size:0.7rem; margin-bottom:2px;">${document.getElementById('inp-cli-nombre').value || 'Sin nombre'} (DNI: ${document.getElementById('inp-cli-dni').value || '-'})</div>
-              <img src="${cliImg}" style="width:130px; height:45px; border:1px dashed #94a3b8; object-fit:contain; background:#fff;">
+              <img src="${cliImg}" style="width:140px; height:45px; border:1px dashed #94a3b8; object-fit:contain; background:#fff;">
             </div>
           </div>
         </div>
@@ -601,7 +656,6 @@
       guardarLocalStorage();
       renderHistorial();
 
-      // Usar el contenido de la vista previa ya formateada y ordenada para el PDF
       const element = document.getElementById('preview-container');
       const opt = {
         margin:       0.3,
@@ -626,6 +680,8 @@
       document.getElementById('inp-fin').value = '';
       document.getElementById('inp-cli-nombre').value = '';
       document.getElementById('inp-cli-dni').value = '';
+      document.getElementById('inp-observaciones').value = '';
+      document.getElementById('inp-conclusiones').value = '';
 
       state.tagsAntes = []; state.tagsDespues = []; state.photosAntes = []; state.photosDespues = [];
       renderTags('antes'); renderTags('despues'); renderPhotos('antes'); renderPhotos('despues');

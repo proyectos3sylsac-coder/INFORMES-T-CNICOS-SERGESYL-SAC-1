@@ -103,15 +103,11 @@
     th, td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
     th { background: #f1f5f9; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; }
 
-    /* Modal / Vista Previa */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 100; padding: 1rem; overflow-y: auto; }
+    /* Modal / Vista Previa Profesional */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; z-index: 100; padding: 1.5rem; }
     .modal.active { display: flex; }
-    .modal-body { background: white; padding: 1.5rem; border-radius: 8px; width: 100%; max-width: 900px; max-height: 92vh; display: flex; flexDirection: column; overflow: hidden; }
-
-    /* Simulador de Páginas A4 en Vista Previa */
-    .preview-pages-container { flex: 1; overflow-y: auto; padding: 1rem; background: #e2e8f0; border-radius: 6px; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
-    .a4-preview-sheet { background: white; width: 100%; max-width: 750px; min-height: 1050px; padding: 2.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 4px; position: relative; }
-    .page-badge { position: absolute; top: 10px; right: 15px; background: #cbd5e1; color: #0f172a; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+    .modal-body { background: #e2e8f0; padding: 1.5rem; border-radius: 8px; width: 100%; max-width: 850px; max-height: 94vh; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
+    .preview-scroll-area { flex: 1; overflow-y: auto; background: #fff; padding: 2rem; border-radius: 6px; border: 1px solid var(--border); box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.06); }
 
     .action-bar { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
   </style>
@@ -121,7 +117,7 @@
   <header>
     <h1>Gestión de Informes Técnicos - SERGESYL</h1>
     <div class="header-btns">
-      <button class="btn btn-success" onclick="abrirVistaPrevia()">👁️ Vista Previa y Guardar Como...</button>
+      <button class="btn btn-success" onclick="abrirVistaPrevia()">👁️ Vista Previa y Guardar PDF</button>
       <button class="btn" onclick="realizarOtroInforme()">➕ Realizar Otro Informe</button>
     </div>
   </header>
@@ -279,7 +275,7 @@
 
       <div class="action-bar">
         <button class="btn" onclick="realizarOtroInforme()">➕ Realizar Otro Informe</button>
-        <button class="btn btn-success" onclick="abrirVistaPrevia()">👁️ Vista Previa y Guardar Como...</button>
+        <button class="btn btn-success" onclick="abrirVistaPrevia()">👁️ Vista Previa y Guardar PDF</button>
       </div>
     </div>
 
@@ -359,32 +355,21 @@
 
   </div>
 
-  <!-- MODAL VISTA PREVIA CON PAGINADOR DINÁMICO -->
+  <!-- MODAL VISTA PREVIA PROFESIONAL -->
   <div class="modal" id="modal-preview">
     <div class="modal-body">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <h3 style="color:var(--secondary);">👁️ Vista Previa del Informe (<span id="lbl-total-paginas">Calculando...</span>)</h3>
+        <h3 style="color:#0f172a;">👁️ Vista Previa del Informe Técnico</h3>
         <button class="btn btn-sm" onclick="cerrarVistaPrevia()">✕ Cerrar</button>
       </div>
       
-      <div class="preview-pages-container" id="preview-container">
-        <!-- Las páginas A4 separadas se generan dinámicamente aquí -->
+      <div class="preview-scroll-area" id="preview-container">
+        <!-- Contenido generado limpiamente -->
       </div>
 
-      <div style="display:flex; gap:0.8rem; justify-content:space-between; align-items:center; margin-top:1rem; flex-wrap:wrap;">
-        <div style="display:flex; gap:0.5rem; align-items:center;">
-          <label style="font-size:0.8rem;">Guardar como:</label>
-          <select id="sel-formato-export" style="padding:0.4rem; border-radius:4px; font-weight:bold;">
-            <option value="pdf">Documento PDF (.pdf)</option>
-            <option value="word">Word (.docx)</option>
-            <option value="excel">Excel (.xlsx / CSV)</option>
-            <option value="text">Texto Plano (.txt)</option>
-          </select>
-        </div>
-        <div style="display:flex; gap:0.5rem;">
-          <button class="btn" onclick="cerrarVistaPrevia()">Regresar a Editar</button>
-          <button class="btn btn-success" onclick="ejecutarGuardarComo()">💾 Guardar Archivo</button>
-        </div>
+      <div style="display:flex; gap:1rem; justify-content:flex-end; align-items:center; margin-top:1rem;">
+        <button class="btn" onclick="cerrarVistaPrevia()">Regresar a Editar</button>
+        <button class="btn btn-success" onclick="guardarEImprimirPDF()">💾 🖨️ Guardar / Imprimir PDF</button>
       </div>
     </div>
   </div>
@@ -599,16 +584,16 @@
       const conclusiones = document.getElementById('inp-conclusiones').value.trim();
 
       const htmlFotosAntes = state.photosAntes.length > 0 ? 
-        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px;">${state.photosAntes.map(s => `<div><img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;"></div>`).join('')}</div>` : 
+        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px; page-break-inside: avoid; break-inside: avoid;">${state.photosAntes.map(s => `<div style="page-break-inside: avoid; break-inside: avoid;"><img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;"></div>`).join('')}</div>` : 
         `<p style="font-size:0.75rem; color:#64748b;">Sin imágenes previas</p>`;
 
       const htmlFotosDespues = state.photosDespues.length > 0 ? 
-        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px;">${state.photosDespues.map(s => `<div><img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;"></div>`).join('')}</div>` : 
+        `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:5px; page-break-inside: avoid; break-inside: avoid;">${state.photosDespues.map(s => `<div style="page-break-inside: avoid; break-inside: avoid;"><img src="${s}" style="width:100%; height:110px; object-fit:cover; border:1px solid #ccc; border-radius:4px;"></div>`).join('')}</div>` : 
         `<p style="font-size:0.75rem; color:#64748b;">Sin imágenes posteriores</p>`;
 
       return `
-        <div style="font-family:sans-serif; font-size:0.8rem; color:#0f172a; line-height:1.4;">
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:6px; margin-bottom:10px;">
+        <div style="font-family:sans-serif; font-size:0.8rem; color:#0f172a; line-height:1.4; padding:15px; background:#fff;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:6px; margin-bottom:10px; page-break-inside: avoid; break-inside: avoid;">
             <div>
               <div style="font-size:1.5rem; font-weight:900; color:#047857;">SERGESYL S.A.C.</div>
               <div style="font-size:0.75rem; color:#1e3a8a; font-weight:700;">SERVICIOS GENERALES ESPECIALIZADOS SYL S.A.C.</div>
@@ -616,7 +601,7 @@
             <div style="text-align:right; background:#f1f5f9; padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1;"><strong>${document.getElementById('lbl-codigo').innerText}</strong><br><span style="font-size:0.65rem; color:#64748b;">${document.getElementById('lbl-clock').innerText}</span></div>
           </div>
           
-          <div style="background:#f8fafc; padding:8px; border-radius:4px; margin-bottom:8px; border:1px solid #e2e8f0;">
+          <div style="background:#f8fafc; padding:8px; border-radius:4px; margin-bottom:8px; border:1px solid #e2e8f0; page-break-inside: avoid; break-inside: avoid;">
             <p><strong>Título:</strong> ${nombreInf}</p>
             <p><strong>Dirigido a:</strong> ${document.getElementById('inp-dirigido').value || '-'}</p>
             <p><strong>Cliente:</strong> ${document.getElementById('sel-cliente').value} | <strong>Lugar:</strong> ${document.getElementById('inp-lugar').value}</p>
@@ -624,27 +609,27 @@
             <p><strong>Responsable:</strong> ${document.getElementById('sel-trabajador').value} (${document.getElementById('sel-cargo').value})</p>
           </div>
 
-          <div>
+          <div style="page-break-inside: avoid; break-inside: avoid;">
             <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:8px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">1. Estado / Problemas Encontrados (Antes)</div>
             <ul style="margin:4px 0 6px 18px;">${state.tagsAntes.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
             <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Antes:</div>
             ${htmlFotosAntes}
           </div>
 
-          <div style="margin-top:10px;">
+          <div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;">
             <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">2. DESPUÉS DE REALIZAR EL TRABAJO</div>
             <ul style="margin:4px 0 6px 18px;">${state.tagsDespues.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
             <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Después:</div>
             ${htmlFotosDespues}
           </div>
 
-          ${observaciones ? `<div style="margin-top:10px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Observaciones y Recomendaciones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${observaciones}</p></div>` : ''}
+          ${observaciones ? `<div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Observaciones y Recomendaciones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${observaciones}</p></div>` : ''}
           
-          ${conclusiones ? `<div style="margin-top:10px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Conclusiones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${conclusiones}</p></div>` : ''}
+          ${conclusiones ? `<div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Conclusiones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${conclusiones}</p></div>` : ''}
 
-          <hr style="margin:15px 0; border:0; border-top:1px solid #ddd;">
+          <hr style="margin:15px 0; border:0; border-top:1px solid #ddd; page-break-inside: avoid; break-inside: avoid;">
           
-          <div style="display:flex; justify-content:space-between; margin-top:8px;">
+          <div style="display:flex; justify-content:space-between; margin-top:8px; page-break-inside: avoid; break-inside: avoid;">
             <div style="width:48%; text-align:center; background:#fafafa; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
               <div style="font-weight:bold; font-size:0.75rem; color:#1e3a8a;">RESPONSABLE DEL SERVICIO</div>
               <div style="font-size:0.7rem; margin-bottom:2px;">${document.getElementById('sel-trabajador').value} - ${document.getElementById('sel-cargo').value}</div>
@@ -664,44 +649,18 @@
       const nombreInf = document.getElementById('inp-nombre-informe').value.trim();
       if(!nombreInf) { alert('Por favor, ingresa el Nombre / Título del Informe Técnico'); return; }
 
-      const htmlCompleto = generarContenidoInformeHTML();
-      const container = document.getElementById('preview-container');
-      container.innerHTML = '';
-
-      // Crear contenedor temporal para medir altura real y simular paginación A4
-      const tempDiv = document.createElement('div');
-      tempDiv.style.cssText = "position:absolute; visibility:hidden; width:720px; font-family:sans-serif; font-size:0.8rem;";
-      tempDiv.innerHTML = htmlCompleto;
-      document.body.appendChild(tempDiv);
-
-      const alturaTotal = tempDiv.offsetHeight;
-      const alturaA4Util = 950; // px aprox por página A4
-      const numPaginas = Math.ceil(alturaTotal / alturaA4Util);
-      document.body.removeChild(tempDiv);
-
-      document.getElementById('lbl-total-paginas').innerText = `${numPaginas} ${numPaginas === 1 ? 'Página' : 'Páginas'}`;
-
-      // Mostrar hojas separadas en la vista previa
-      for(let i=0; i<numPaginas; i++) {
-        const hoja = document.createElement('div');
-        hoja.className = 'a4-preview-sheet';
-        hoja.innerHTML = `<div class="page-badge">Página ${i+1} de ${numPaginas}</div><div style="overflow:hidden; height:${alturaA4Util}px; position:relative; margin-top:-${i * alturaA4Util}px;">${htmlCompleto}</div>`;
-        container.appendChild(hoja);
-      }
-
+      document.getElementById('preview-container').innerHTML = generarContenidoInformeHTML();
       document.getElementById('modal-preview').classList.add('active');
     }
 
     function cerrarVistaPrevia() { document.getElementById('modal-preview').classList.remove('active'); }
 
-    function ejecutarGuardarComo() {
-      const formato = document.getElementById('sel-formato-export').value;
+    function guardarEImprimirPDF() {
       const nombreInf = document.getElementById('inp-nombre-informe').value.trim();
-      const codigo = document.getElementById('lbl-codigo').innerText;
-
       if(!nombreInf) { alert('Por favor, ingresa el Nombre / Título del Informe Técnico'); return; }
 
       cerrarVistaPrevia();
+      const codigo = document.getElementById('lbl-codigo').innerText;
 
       state.historial.unshift({
         codigo,
@@ -713,63 +672,23 @@
       guardarLocalStorage();
       renderHistorial();
 
-      const baseFilename = `${codigo}_${nombreInf.replace(/[^a-zA-Z0-9]/g, '_')}`;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = generarContenidoInformeHTML();
+      document.body.appendChild(tempDiv);
 
-      if (formato === 'pdf') {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = generarContenidoInformeHTML();
-        document.body.appendChild(tempDiv);
+      const opt = {
+        margin:       0.3,
+        filename:     `${codigo}_${nombreInf.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
 
-        const opt = {
-          margin:       0.3,
-          filename:     `${baseFilename}.pdf`,
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2, useCORS: true, logging: false },
-          jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-        };
-
-        setTimeout(() => {
-          html2pdf().set(opt).from(tempDiv).save().then(() => {
-            document.body.removeChild(tempDiv);
-          });
-        }, 300);
-
-      } else if (formato === 'word') {
-        // Generar archivo compatible con Word (.doc / .docx mediante HTML blob)
-        const content = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${generarContenidoInformeHTML()}</body></html>`;
-        const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${baseFilename}.doc`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-      } else if (formato === 'excel') {
-        // Generar CSV estructurado para Excel
-        let csv = `Codigo,${codigo}\nInforme,${nombreInf}\nCliente,${document.getElementById('sel-cliente').value}\nLugar,${document.getElementById('inp-lugar').value}\nResponsable,${document.getElementById('sel-trabajador').value} (${document.getElementById('sel-cargo').value})\n\n-- ESTADO ANTES --\n` + state.tagsAntes.join(';') + `\n\n-- DESPUES --\n` + state.tagsDespues.join(';');
-        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${baseFilename}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-      } else if (formato === 'text') {
-        // Generar archivo de texto plano
-        let txt = `INFORME TÉCNICO: ${codigo}\nTítulo: ${nombreInf}\nCliente: ${document.getElementById('sel-cliente').value}\nLugar: ${document.getElementById('inp-lugar').value}\nResponsable: ${document.getElementById('sel-trabajador').value}\n\n1. ANTES:\n- ` + state.tagsAntes.join('\n- ') + `\n\n2. DESPUÉS:\n- ` + state.tagsDespues.join('\n- ') + `\n\nObservaciones: ${document.getElementById('inp-observaciones').value}\nConclusiones: ${document.getElementById('inp-conclusiones').value}`;
-        const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${baseFilename}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
+      setTimeout(() => {
+        html2pdf().set(opt).from(tempDiv).save().then(() => {
+          document.body.removeChild(tempDiv);
+        });
+      }, 300);
     }
 
     function realizarOtroInforme() {

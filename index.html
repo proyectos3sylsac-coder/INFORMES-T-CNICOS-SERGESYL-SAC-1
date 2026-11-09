@@ -282,7 +282,10 @@
     <!-- TAB: HISTORIAL -->
     <div id="tab-historial" class="tab-content">
       <div class="card">
-        <h2 style="margin-bottom:1rem; font-size:1.1rem;">Historial de Informes Registrados</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+          <h2 style="font-size:1.1rem;">Historial de Informes Registrados</h2>
+          <button class="btn btn-success btn-sm" onclick="exportarHistorialExcel()">📊 Exportar Historial a Excel</button>
+        </div>
         <div class="table-responsive">
           <table>
             <thead>
@@ -689,6 +692,34 @@
           document.body.removeChild(tempDiv);
         });
       }, 300);
+    }
+
+    function exportarHistorialExcel() {
+      if(state.historial.length === 0) {
+        alert('No hay registros en el historial para exportar.');
+        return;
+      }
+
+      let csvContent = "\ufeffCódigo,Fecha,Nombre del Informe,Cliente,Responsable\n";
+      state.historial.forEach(item => {
+        let row = [
+          `"${item.codigo}"`,
+          `"${item.fecha}"`,
+          `"${item.nombre.replace(/"/g, '""')}"`,
+          `"${item.cliente.replace(/"/g, '""')}"`,
+          `"${item.responsable.replace(/"/g, '""')}"`
+        ];
+        csvContent += row.join(",") + "\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Historial_Informes_SERGESYL_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     function realizarOtroInforme() {

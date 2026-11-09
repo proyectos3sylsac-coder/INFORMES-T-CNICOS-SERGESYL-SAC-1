@@ -5,9 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Informes Técnicos - SERGESYL S.A.C.</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <!-- Firebase SDK Conectado con tus Credenciales -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwHrvYeAwoAqnZLY7rkmP0cT8S9v1hGck",
+      authDomain: "sergesyl-informes-tecnicos.firebaseapp.com",
+      projectId: "sergesyl-informes-tecnicos",
+      storageBucket: "sergesyl-informes-tecnicos.firebasestorage.app",
+      messagingSenderId: "597493043922",
+      appId: "1:597493043922:web:2d289f4dd4a0ab41df130b",
+      measurementId: "G-836ENG5LVD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window.db = db;
+    window.firebaseEnabled = true;
+  </script>
+
   <style>
     :root {
-      --primary: #047857; /* Verde corporativo Sergesyl */
+      --primary: #047857;
       --primary-dark: #065f46;
       --secondary: #1e3a8a;
       --bg: #f8fafc;
@@ -46,7 +68,6 @@
 
     .card { background: var(--surface); border-radius: 8px; border: 1px solid var(--border); padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     
-    /* MARCO Y DISEÑO CORPORATIVO TIPO HOJA A4 */
     .report-paper { 
       background: white; 
       border: 3px double var(--secondary); 
@@ -77,7 +98,6 @@
     .radio-group { display: flex; gap: 1rem; align-items: center; margin-top: 0.2rem; flex-wrap: wrap; }
     .radio-group label { font-size: 0.85rem; text-transform: none; color: var(--text); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.3rem; }
 
-    /* Tags UI */
     .tags-container { border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem; min-height: 45px; background: #fff; }
     .tag-input-row { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; }
     .tags-list { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; }
@@ -85,25 +105,21 @@
     .tag-item .remove-tag { cursor: pointer; font-weight: bold; color: var(--primary); }
     .tag-item .remove-tag:hover { color: var(--danger); }
 
-    /* GALERÍA DE FOTOS 3 EN LÍNEA */
     .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-top: 0.5rem; }
     .photo-card { position: relative; width: 100%; height: 130px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); background: #fff; }
     .photo-card img { width: 100%; height: 100%; object-fit: cover; }
     .photo-card .del-photo { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
 
-    /* Firmas digital touch */
     .signature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.2rem; }
     .sig-box { border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem; background: #fafafa; text-align: center; }
     .sig-canvas-wrap { position: relative; width: 100%; height: 110px; background: white; border: 1px dashed #94a3b8; border-radius: 4px; margin: 0.4rem 0; touch-action: none; }
     canvas { width: 100%; height: 100%; display: block; }
 
-    /* Historial */
     .table-responsive { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
     th, td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
     th { background: #f1f5f9; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; }
 
-    /* Modal / Vista Previa Exclusiva PDF */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; z-index: 100; padding: 1.5rem; }
     .modal.active { display: flex; }
     .modal-body { background: #e2e8f0; padding: 1.5rem; border-radius: 8px; width: 100%; max-width: 850px; max-height: 94vh; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
@@ -133,7 +149,6 @@
     <div id="tab-informe" class="tab-content active">
       <div class="report-paper">
         
-        <!-- Header del Formulario -->
         <div class="report-header">
           <div>
             <div class="company-title-brand">SERGESYL S.A.C.</div>
@@ -196,7 +211,6 @@
           </div>
         </div>
 
-        <!-- Seccion Antes -->
         <div class="card">
           <label style="margin-bottom:0.4rem; display:block;">1. Estado / Problemas Encontrados (Antes)</label>
           <div class="tag-input-row">
@@ -214,7 +228,6 @@
           </div>
         </div>
 
-        <!-- Seccion Despues -->
         <div class="card">
           <label style="margin-bottom:0.4rem; display:block;">2. DESPUÉS DE REALIZAR EL TRABAJO</label>
           <div class="tag-input-row">
@@ -232,7 +245,6 @@
           </div>
         </div>
 
-        <!-- Observaciones y Conclusiones -->
         <div class="form-grid" style="margin-top:1rem;">
           <div class="form-group full">
             <label>Observaciones y Recomendaciones</label>
@@ -244,7 +256,6 @@
           </div>
         </div>
 
-        <!-- Firmas -->
         <div class="signature-grid">
           <div class="sig-box">
             <label>Firma del Responsable / Técnico</label>
@@ -317,6 +328,13 @@
               <button class="btn btn-primary" onclick="guardarPrefijoCodigo()">Actualizar Prefijo</button>
             </div>
           </div>
+          <div class="form-group full">
+            <label>Ajustar Número Correlativo Actual (Si cambias de dispositivo)</label>
+            <div style="display:flex; gap:0.5rem;">
+              <input type="number" id="inp-correlativo-manual" placeholder="Ej: 5">
+              <button class="btn btn-primary" onclick="actualizarCorrelativoManual()">Actualizar Correlativo</button>
+            </div>
+          </div>
         </div>
 
         <div class="form-grid">
@@ -366,9 +384,7 @@
         <button class="btn btn-sm" onclick="cerrarVistaPrevia()">✕ Cerrar</button>
       </div>
       
-      <div class="preview-scroll-area" id="preview-container">
-        <!-- Contenido limpio listo para exportar -->
-      </div>
+      <div class="preview-scroll-area" id="preview-container"></div>
 
       <div style="display:flex; gap:1rem; justify-content:flex-end; align-items:center; margin-top:1rem;">
         <button class="btn" onclick="cerrarVistaPrevia()">Regresar a Editar</button>
@@ -404,8 +420,8 @@
       historial: []
     };
 
-    window.addEventListener('DOMContentLoaded', () => {
-      cargarLocalStorage();
+    window.addEventListener('DOMContentLoaded', async () => {
+      await cargarDatos();
       iniciarReloj();
       renderSelects();
       actualizarInfoResponsable();
@@ -414,15 +430,32 @@
       initCanvas('canvas-cli');
       renderHistorial();
       document.getElementById('inp-codigo-prefijo').value = state.codigoPrefijo;
+      document.getElementById('inp-correlativo-manual').value = state.correlativo;
     });
 
-    function cargarLocalStorage() {
-      const data = localStorage.getItem('app_sergesyl_db');
-      if (data) state = { ...state, ...JSON.parse(data) };
+    async function cargarDatos() {
+      if (window.firebaseEnabled && window.db) {
+        try {
+          const docRef = doc(window.db, "sergesyl", "config");
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            state = { ...state, ...docSnap.data() };
+          }
+        } catch (e) { console.error("Error cargando de Firebase", e); }
+      } else {
+        const data = localStorage.getItem('app_sergesyl_db');
+        if (data) state = { ...state, ...JSON.parse(data) };
+      }
     }
 
-    function guardarLocalStorage() {
-      localStorage.setItem('app_sergesyl_db', JSON.stringify(state));
+    async function guardarDatos() {
+      if (window.firebaseEnabled && window.db) {
+        try {
+          await setDoc(doc(window.db, "sergesyl", "config"), state);
+        } catch (e) { console.error("Error guardando en Firebase", e); }
+      } else {
+        localStorage.setItem('app_sergesyl_db', JSON.stringify(state));
+      }
     }
 
     function iniciarReloj() {
@@ -439,9 +472,21 @@
       const p = document.getElementById('inp-codigo-prefijo').value.trim();
       if(p) {
         state.codigoPrefijo = p;
-        guardarLocalStorage();
+        guardarDatos();
         actualizarCodigo();
         alert('Prefijo de código actualizado correctamente.');
+      }
+    }
+
+    function actualizarCorrelativoManual() {
+      const val = parseInt(document.getElementById('inp-correlativo-manual').value);
+      if(!isNaN(val) && val > 0) {
+        state.correlativo = val;
+        guardarDatos();
+        actualizarCodigo();
+        alert('Número correlativo actualizado correctamente.');
+      } else {
+        alert('Ingresa un número válido.');
       }
     }
 
@@ -480,7 +525,7 @@
 
     function cambiarPassword() {
       const p = document.getElementById('inp-new-pass').value.trim();
-      if(p) { state.editorPass = p; guardarLocalStorage(); alert('Contraseña actualizada'); document.getElementById('inp-new-pass').value=''; }
+      if(p) { state.editorPass = p; guardarDatos(); alert('Contraseña actualizada'); document.getElementById('inp-new-pass').value=''; }
     }
 
     function renderSelects() {
@@ -500,10 +545,10 @@
 
     function addItem(type) {
       const inp = document.getElementById(`inp-new-${type === 'trabajadores' ? 'trabajador' : type === 'cargos' ? 'cargo' : 'cliente'}`);
-      if(inp.value.trim()) { state[type].push(inp.value.trim()); inp.value=''; guardarLocalStorage(); renderSelects(); renderEditorLists(); }
+      if(inp.value.trim()) { state[type].push(inp.value.trim()); inp.value=''; guardarDatos(); renderSelects(); renderEditorLists(); }
     }
 
-    function removeItem(type, idx) { state[type].splice(idx, 1); guardarLocalStorage(); renderSelects(); renderEditorLists(); }
+    function removeItem(type, idx) { state[type].splice(idx, 1); guardarDatos(); renderSelects(); renderEditorLists(); }
 
     function addTag(type) {
       const inp = document.getElementById(`inp-tag-${type}`);
@@ -658,7 +703,7 @@
 
     function cerrarVistaPrevia() { document.getElementById('modal-preview').classList.remove('active'); }
 
-    function descargarPDFDirecto() {
+    async function descargarPDFDirecto() {
       const nombreInf = document.getElementById('inp-nombre-informe').value.trim();
       if(!nombreInf) { alert('Por favor, ingresa el Nombre / Título del Informe Técnico'); return; }
 
@@ -672,10 +717,9 @@
         responsable: document.getElementById('sel-trabajador').value,
         fecha: new Date().toLocaleDateString('es-PE')
       });
-      guardarLocalStorage();
+      await guardarDatos();
       renderHistorial();
 
-      // Generar PDF limpio y profesional sin mostrar diálogos de impresión web
       const elementoTemporal = document.createElement('div');
       elementoTemporal.innerHTML = generarContenidoInformeHTML();
       document.body.appendChild(elementoTemporal);
@@ -723,10 +767,11 @@
       document.body.removeChild(a);
     }
 
-    function realizarOtroInforme() {
+    async function realizarOtroInforme() {
       state.correlativo++;
-      guardarLocalStorage();
+      await guardarDatos();
       actualizarCodigo();
+      document.getElementById('inp-correlativo-manual').value = state.correlativo;
 
       document.getElementById('inp-nombre-informe').value = '';
       document.getElementById('inp-dirigido').value = '';
@@ -744,10 +789,10 @@
       alert('Formulario listo para un nuevo informe.');
     }
 
-    function eliminarDelHistorial(idx) {
+    async function eliminarDelHistorial(idx) {
       if(confirm('¿Estás seguro de eliminar este informe del historial?')) {
         state.historial.splice(idx, 1);
-        guardarLocalStorage();
+        await guardarDatos();
         renderHistorial();
       }
     }

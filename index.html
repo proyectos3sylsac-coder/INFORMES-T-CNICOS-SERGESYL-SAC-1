@@ -671,16 +671,16 @@
         `<p style="font-size:0.75rem; color:#64748b;">Sin imágenes posteriores</p>`;
 
       return `
-        <div style="font-family:sans-serif; font-size:0.8rem; color:#0f172a; line-height:1.4; padding:20px; background:#fff; max-width:800px; margin:0 auto;">
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:6px; margin-bottom:10px; page-break-inside: avoid; break-inside: avoid;">
+        <div style="font-family:sans-serif; font-size:0.78rem; color:#0f172a; line-height:1.35; padding:15px; background:#fff; max-width:800px; margin:0 auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #047857; padding-bottom:5px; margin-bottom:8px; page-break-inside: avoid; break-inside: avoid;">
             <div>
-              <div style="font-size:1.5rem; font-weight:900; color:#047857;">SERGESYL S.A.C.</div>
-              <div style="font-size:0.75rem; color:#1e3a8a; font-weight:700;">SERVICIOS GENERALES ESPECIALIZADOS SYL S.A.C.</div>
+              <div style="font-size:1.4rem; font-weight:900; color:#047857;">SERGESYL S.A.C.</div>
+              <div style="font-size:0.7rem; color:#1e3a8a; font-weight:700;">SERVICIOS GENERALES ESPECIALIZADOS SYL S.A.C.</div>
             </div>
-            <div style="text-align:right; background:#f1f5f9; padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1;"><strong>${document.getElementById('lbl-codigo').innerText}</strong><br><span style="font-size:0.65rem; color:#64748b;">${document.getElementById('lbl-clock').innerText}</span></div>
+            <div style="text-align:right; background:#f1f5f9; padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1;"><strong>${document.getElementById('lbl-codigo').innerText}</strong><br><span style="font-size:0.62rem; color:#64748b;">${document.getElementById('lbl-clock').innerText}</span></div>
           </div>
           
-          <div style="background:#f8fafc; padding:8px; border-radius:4px; margin-bottom:8px; border:1px solid #e2e8f0; page-break-inside: avoid; break-inside: avoid;">
+          <div style="background:#f8fafc; padding:6px 8px; border-radius:4px; margin-bottom:6px; border:1px solid #e2e8f0; page-break-inside: avoid; break-inside: avoid;">
             <p><strong>Título:</strong> ${nombreInf}</p>
             <p><strong>Dirigido a:</strong> ${document.getElementById('inp-dirigido').value || '-'}</p>
             <p><strong>Cliente:</strong> ${document.getElementById('sel-cliente').value} | <strong>Lugar:</strong> ${document.getElementById('inp-lugar').value}</p>
@@ -688,36 +688,41 @@
             <p><strong>Responsable:</strong> ${document.getElementById('sel-trabajador').value} (${document.getElementById('sel-cargo').value})</p>
           </div>
 
-          <div style="page-break-inside: avoid; break-inside: avoid;">
-            <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:8px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">1. Estado / Problemas Encontrados (Antes)</div>
-            <ul style="margin:4px 0 6px 18px;">${state.tagsAntes.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
-            <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Antes:</div>
+          <div style="page-break-inside: avoid; break-inside: avoid; margin-bottom:6px;">
+            <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:2px 6px; border-left:3px solid #047857; font-size:0.72rem; text-transform:uppercase;">1. Estado / Problemas Encontrados (Antes)</div>
+            <ul style="margin:2px 0 4px 16px;">${state.tagsAntes.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
+            <div style="font-size:0.72rem; font-weight:bold; margin-bottom:2px;">Evidencia Antes:</div>
             ${htmlFotosAntes}
           </div>
 
-          <div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;">
-            <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; margin-top:10px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">2. DESPUÉS DE REALIZAR EL TRABAJO</div>
-            <ul style="margin:4px 0 6px 18px;">${state.tagsDespues.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
-            <div style="font-size:0.75rem; font-weight:bold; margin-top:4px;">Evidencia Después:</div>
+          <div style="page-break-inside: avoid; break-inside: avoid; margin-bottom:6px;">
+            <div style="font-weight:700; color:#047857; background:#ecfdf5; padding:2px 6px; border-left:3px solid #047857; font-size:0.72rem; text-transform:uppercase;">2. DESPUÉS DE REALIZAR EL TRABAJO</div>
+            <ul style="margin:2px 0 4px 16px;">${state.tagsDespues.map(t => `<li>${t}</li>`).join('') || '<li>Ninguno</li>'}</ul>
+            <div style="font-size:0.72rem; font-weight:bold; margin-bottom:2px;">Evidencia Después:</div>
             ${htmlFotosDespues}
           </div>
 
-          ${observaciones ? `<div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Observaciones y Recomendaciones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${observaciones}</p></div>` : ''}
+          ${observaciones ? `<div style="page-break-inside: avoid; break-inside: avoid; margin-bottom:6px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:2px 6px; border-left:3px solid #047857; font-size:0.72rem; text-transform:uppercase;">Observaciones y Recomendaciones</div><p style="margin:2px 0 2px 4px; font-size:0.75rem;">${observaciones}</p></div>` : ''}
           
-          ${conclusiones ? `<div style="page-break-inside: avoid; break-inside: avoid; margin-top:10px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:3px 6px; border-left:3px solid #047857; font-size:0.75rem; text-transform:uppercase;">Conclusiones</div><p style="margin:4px 0 6px 4px; font-size:0.78rem;">${conclusiones}</p></div>` : ''}
+          ${conclusiones ? `<div style="page-break-inside: avoid; break-inside: avoid; margin-bottom:6px;"><div style="font-weight:700; color:#047857; background:#ecfdf5; padding:2px 6px; border-left:3px solid #047857; font-size:0.72rem; text-transform:uppercase;">Conclusiones</div><p style="margin:2px 0 2px 4px; font-size:0.75rem;">${conclusiones}</p></div>` : ''}
 
-          <hr style="margin:15px 0; border:0; border-top:1px solid #ddd; page-break-inside: avoid; break-inside: avoid;">
+          <hr style="margin:8px 0; border:0; border-top:1px solid #ddd; page-break-inside: avoid; break-inside: avoid;">
           
-          <div style="display:flex; justify-content:space-between; margin-top:8px; page-break-inside: avoid; break-inside: avoid;">
-            <div style="width:48%; text-align:center; background:#fafafa; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
-              <div style="font-weight:bold; font-size:0.75rem; color:#1e3a8a;">RESPONSABLE DEL SERVICIO</div>
-              <div style="font-size:0.7rem; margin-bottom:2px;">${document.getElementById('sel-trabajador').value} - ${document.getElementById('sel-cargo').value}</div>
-              <img src="${respImg}" style="width:140px; height:45px; border:1px dashed #94a3b8; object-fit:contain; background:#fff;">
+          <!-- SECCIÓN DE FIRMAS BLINDADA Y COMPACTA PARA PDF -->
+          <div style="display:flex; justify-content:space-between; margin-top:6px; page-break-inside: avoid; break-inside: avoid;">
+            <div style="width:48%; text-align:center; background:#fafafa; padding:6px; border:1px solid #cbd5e1; border-radius:4px; page-break-inside: avoid; break-inside: avoid;">
+              <div style="font-weight:bold; font-size:0.72rem; color:#1e3a8a; margin-bottom:1px;">RESPONSABLE DEL SERVICIO</div>
+              <div style="font-size:0.62rem; margin-bottom:3px; color:#334155;">${document.getElementById('sel-trabajador').value} - ${document.getElementById('sel-cargo').value}</div>
+              <div style="height:45px; display:flex; align-items:center; justify-content:center; background:#fff; border:1px dashed #94a3b8; border-radius:3px;">
+                <img src="${respImg}" style="max-height:40px; max-width:140px; object-fit:contain;">
+              </div>
             </div>
-            <div style="width:48%; text-align:center; background:#fafafa; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
-              <div style="font-weight:bold; font-size:0.75rem; color:#1e3a8a;">CONFORMIDAD CLIENTE</div>
-              <div style="font-size:0.7rem; margin-bottom:2px;">${document.getElementById('inp-cli-nombre').value || 'Sin nombre'} (DNI: ${document.getElementById('inp-cli-dni').value || '-'})</div>
-              <img src="${cliImg}" style="width:140px; height:45px; border:1px dashed #94a3b8; object-fit:contain; background:#fff;">
+            <div style="width:48%; text-align:center; background:#fafafa; padding:6px; border:1px solid #cbd5e1; border-radius:4px; page-break-inside: avoid; break-inside: avoid;">
+              <div style="font-weight:bold; font-size:0.72rem; color:#1e3a8a; margin-bottom:1px;">CONFORMIDAD CLIENTE</div>
+              <div style="font-size:0.62rem; margin-bottom:3px; color:#334155;">${document.getElementById('inp-cli-nombre').value || 'Sin nombre'} (DNI: ${document.getElementById('inp-cli-dni').value || '-'})</div>
+              <div style="height:45px; display:flex; align-items:center; justify-content:center; background:#fff; border:1px dashed #94a3b8; border-radius:3px;">
+                <img src="${cliImg}" style="max-height:40px; max-width:140px; object-fit:contain;">
+              </div>
             </div>
           </div>
         </div>
@@ -749,7 +754,6 @@
         fecha: new Date().toLocaleDateString('es-PE')
       });
       
-      // Incrementar automáticamente el correlativo y guardar en la nube
       state.correlativo++;
       await window.guardarEnNube(false);
       actualizarCodigo();
@@ -759,7 +763,7 @@
       document.body.appendChild(elementoTemporal);
 
       const opciones = {
-        margin:       0.3,
+        margin:       0.25,
         filename:     `${codigo}_${nombreInf.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, logging: false },
@@ -769,7 +773,7 @@
       setTimeout(() => {
         html2pdf().set(opciones).from(elementoTemporal).save().then(() => {
           document.body.removeChild(elementoTemporal);
-          realizarOtroInformeSilencioso(); // Limpia el formulario automáticamente al terminar de descargar el PDF
+          realizarOtroInformeSilencioso();
         });
       }, 300);
     }

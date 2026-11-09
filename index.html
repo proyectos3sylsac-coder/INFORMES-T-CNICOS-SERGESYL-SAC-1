@@ -6,7 +6,7 @@
   <title>Sistema de Informes Técnicos - SERGESYL S.A.C.</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   
-  <!-- Firebase SDK Sincronizado y Robusto -->
+  <!-- Firebase SDK Blindado -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -25,18 +25,19 @@
     const db = getFirestore(app);
     window.db = db;
 
-    // Guardado automático en Firebase + LocalStorage de respaldo
-    window.guardarEnNube = async function() {
+    // Guardado manual y automático blindado
+    window.guardarEnNube = async function(mostrarAlerta = true) {
       try {
         localStorage.setItem('app_sergesyl_db', JSON.stringify(state));
         await setDoc(doc(db, "sergesyl", "config"), state);
+        if(mostrarAlerta) alert('¡Cambios guardados y sincronizados correctamente en la nube!');
       } catch (e) { 
-        console.error("Error al sincronizar con Firebase:", e); 
+        console.error("Error al guardar:", e);
+        alert('Error al guardar en la nube. Revisa tu conexión.');
       }
     };
 
-    // Sincronización en tiempo real
-    async function sincronizarRemoto() {
+    async function cargarDatosNube() {
       try {
         const docRef = doc(db, "sergesyl", "config");
         const docSnap = await getDoc(docRef);
@@ -50,10 +51,9 @@
           state.historial = cloudData.historial ?? state.historial;
           state.editorPass = cloudData.editorPass ?? state.editorPass;
         } else {
-          await window.guardarEnNube();
+          await window.guardarEnNube(false);
         }
       } catch(e) {
-        // Respaldo local si falla la red
         const local = localStorage.getItem('app_sergesyl_db');
         if(local) state = { ...state, ...JSON.parse(local) };
       }
@@ -65,30 +65,10 @@
       if(document.getElementById('inp-codigo-prefijo')) {
         document.getElementById('inp-codigo-prefijo').value = state.codigoPrefijo;
       }
-
-      // Escuchar cambios automáticos desde otros dispositivos (celular/PC)
-      onSnapshot(doc(db, "sergesyl", "config"), (docSnap) => {
-        if (docSnap.exists()) {
-          const cloudData = docSnap.data();
-          state.correlativo = cloudData.correlativo ?? state.correlativo;
-          state.codigoPrefijo = cloudData.codigoPrefijo ?? state.codigoPrefijo;
-          state.trabajadores = cloudData.trabajadores ?? state.trabajadores;
-          state.cargos = cloudData.cargos ?? state.cargos;
-          state.clientes = cloudData.clientes ?? state.clientes;
-          state.historial = cloudData.historial ?? state.historial;
-          state.editorPass = cloudData.editorPass ?? state.editorPass;
-
-          localStorage.setItem('app_sergesyl_db', JSON.stringify(state));
-          actualizarCodigo();
-          renderSelects();
-          renderHistorial();
-          renderEditorLists();
-        }
-      });
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      sincronizarRemoto();
+    window.addEventListener('DOMContentLoaded', async () => {
+      await cargarDatosNube();
       iniciarReloj();
       initCanvas('canvas-resp');
       initCanvas('canvas-cli');
@@ -386,7 +366,11 @@
     <!-- TAB: EDITOR -->
     <div id="tab-editor" class="tab-content">
       <div class="card">
-        <h2 style="margin-bottom:1rem; font-size:1.1rem;">Administración de Listas y Configuración de Código</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:1rem;">
+          <h2 style="font-size:1.1rem;">Administración de Listas y Configuración de Código</h2>
+          <!-- BOTÓN EXCLUSIVO DE GUARDAR CAMBIOS -->
+          <button class="btn btn-success" onclick="window.guardarEnNube(true)" style="padding: 0.6rem 1.2rem; font-size: 0.95rem;">💾 GUARDAR TODOS LOS CAMBIOS</button>
+        </div>
         
         <div class="form-grid" style="margin-bottom:1.5rem; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid var(--border);">
           <div class="form-group full">
@@ -505,8 +489,7 @@
       const p = document.getElementById('inp-codigo-prefijo').value.trim();
       if(p) {
         state.codigoPrefijo = p;
-        await window.guardarEnNube();
-        alert('Prefijo actualizado y sincronizado.');
+        await window.guardarEnNube(true);
       }
     }
 
@@ -514,8 +497,7 @@
       const val = parseInt(document.getElementById('inp-correlativo-manual').value);
       if(!isNaN(val) && val > 0) {
         state.correlativo = val;
-        await window.guardarEnNube();
-        alert('Correlativo actualizado y sincronizado.');
+        await window.guardarEnNube(true);
       } else {
         alert('Ingresa un número válido.');
       }
@@ -558,8 +540,7 @@
       const p = document.getElementById('inp-new-pass').value.trim();
       if(p) { 
         state.editorPass = p; 
-        await window.guardarEnNube(); 
-        alert('Contraseña actualizada'); 
+        await window.guardarEnNube(true); 
         document.getElementById('inp-new-pass').value=''; 
       }
     }
@@ -596,7 +577,7 @@
       if(inp && inp.value.trim()) { 
         state[type].push(inp.value.trim()); 
         inp.value=''; 
-        await window.guardarEnNube(); 
+        await window.guardarEnNube(false); 
         renderEditorLists(); 
         renderSelects();
       }
@@ -604,7 +585,7 @@
 
     async function removeItem(type, idx) { 
       state[type].splice(idx, 1); 
-      await window.guardarEnNube(); 
+      await window.guardarEnNube(false); 
       renderEditorLists(); 
       renderSelects();
     }
@@ -777,7 +758,7 @@
         fecha: new Date().toLocaleDateString('es-PE')
       });
       state.correlativo++;
-      await window.guardarEnNube();
+      await window.guardarEnNube(false);
 
       const elementoTemporal = document.createElement('div');
       elementoTemporal.innerHTML = generarContenidoInformeHTML();
@@ -846,7 +827,7 @@
     async function eliminarDelHistorial(idx) {
       if(confirm('¿Estás seguro de eliminar este informe del historial?')) {
         state.historial.splice(idx, 1);
-        await window.guardarEnNube();
+        await window.guardarEnNube(false);
       }
     }
 
